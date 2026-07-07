@@ -1,10 +1,18 @@
 import os
-from dotenv import load_dotenv
-from flask import Flask, flash, redirect, render_template, request, session
 
-load_dotenv()
-api_key = os.getenv("TMDB_API_KEY")
-TMDB_BASE_URL = "https://api.themoviedb.org/3"
+from flask import Flask, flash, redirect, render_template, request, session
 
 app = Flask(__name__)
 
+@app.route('/')
+def index():
+    return render_template('layout.html')
+
+@app.route('/Recomendations')
+def recommend():
+    movie
+    return render_template('recommend.html')
+
+@app.route('/GuessTheMovie')
+def gues():
+    return render_template('guess.html')
