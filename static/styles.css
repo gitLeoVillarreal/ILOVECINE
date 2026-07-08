@@ -6,7 +6,8 @@
 
 body {
     font-family: "Stack Sans Text", sans-serif;
-    background-color: #F8FAFC;
+    background: #f0f0f0;
+background: linear-gradient(179deg, rgba(240, 240, 240, 1) 0%, rgba(203, 244, 247, 1) 100%, rgba(163, 162, 160, 1) 0%);
 }
 
 hr {

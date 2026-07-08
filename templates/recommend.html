@@ -9,10 +9,8 @@
         <input class="form-control" id="movie" list="movie-list">
         <datalist id="movie-list">
             {% for m in movies %}
-            <option value = "{{m['title']}}">
-
+            <option value = "{{m[2]}}">
             {% endfor %}
-            <option value="hola">
         </datalist>
         <button class="btn btn-primary" type="submit">Recommend</button>
     </form>
