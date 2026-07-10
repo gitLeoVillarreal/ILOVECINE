@@ -13,8 +13,7 @@
 
         <label for="movie"> Try to guess the movie: </label>
         <div class="autocomplete-wrapper" style="position:relative;">
-            <input class="form-control" name="movie" list="movie-list" id="movie" autocomplete="off"
-                value="{{ request.form.get('movie', '') }}">
+            <input class="form-control" onclick="GuessMovie()" name="movie" list="movie-list" id="movie" autocomplete="off" value="{{ request.form.get('movie', '') }}">
             <div id="movie-list" class="autocomplete-list">
                 {% for m in movies %}
                 <div class="autocomplete-option" data-value="{{ m[2] }}" style="padding:5px; cursor:pointer;">
@@ -24,7 +23,7 @@
                 {% endfor %}
             </div>
         </div>
-        <button class="btn btn-primary" id="guess-button" onclick="GuessMovie()" type="submit">Guess</button>
+        <button class="btn btn-primary" id="guess-button" type="submit">Guess</button>
     </form>
 
     <div class="card">
@@ -55,12 +54,13 @@
     const score = parseInt(document.getElementById('score').value);
     let clicks = guesses;
     function GuessMovie() {
-        //event.preventDefault();
-        if (movieTitle.localeCompare(movieGuess) == 0) {
-            console.log("Correct guess!");
-
-        } else {
-
+        if(movieTitle.localeCompare(movieGuess) == 0){
+            console.log("Correct!")
+        }
+        else{
+            event.preventDefault();
+            clicks++;
+            document.getElementById('guesses').value = clicks;
             revealPoster(clicks);
         }
     }
