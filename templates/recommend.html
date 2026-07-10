@@ -4,15 +4,67 @@
 
 {% block content %}
 <div class="form-background">
+    <h2>Recommend movies:</h2>
     <form class="form-inline" method="post">
         <label for="movie"> Insert a movie you liked: </label>
-        <input class="form-control" id="movie" list="movie-list">
-        <datalist id="movie-list">
-            {% for m in movies %}
-            <option value = "{{m[2]}}">
-            {% endfor %}
-        </datalist>
+        <div class="autocomplete-wrapper" style="position:relative;">
+            <input class="form-control" name="movie" id="movie" autocomplete="off"
+                value="{{ request.form.get('movie', '') }}">
+            <div id="movie-list" class="autocomplete-list">
+                {% for m in movies %}
+                <div class="autocomplete-option" data-value="{{ m[2] }}" style="padding:5px; cursor:pointer;">
+                    <img src="{{ m[3] }}" alt="{{ m[2] }}" width="40">
+                    {{ m[2] }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
         <button class="btn btn-primary" type="submit">Recommend</button>
     </form>
+    {% if recommendedMovie %}
+    <table class="table table-striped d-none d-md-table">
+        <thead>
+            <tr>
+                <th scope="col">Poster</th>
+                <th scope="col">Title</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Release Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rm in recommendedMovie %}
+            <tr>
+                <td><img src="{{ rm.poster }}" alt="{{ rm.title }}" width="100"></td>
+                <td>{{ rm.title }}</td>
+                <td>{{ rm.genres|join(", ") }}</td>
+                <td>{{ '{:.1f}'.format(rm.rating) }}/10 ⭐</td>
+                <td>{{ rm.release_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="d-md-none">
+        {% for rm in recommendedMovie %}
+        <div class="card mb-2 p-1">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ rm.poster }}" class="img-fluid rounded-start" alt="{{ rm.title }}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ rm.title }}</h5>
+                        <p class="card-text"><strong>Genre:</strong> {{ rm.genres| join(", ") }}</p>
+                        <p class="card-text"><strong>Rating:</strong> {{ rm.rating }}/10 ⭐</p>
+                        <p class="card-text"><strong>Release Date:</strong> {{ rm.release_date }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
+
 {% endblock %}

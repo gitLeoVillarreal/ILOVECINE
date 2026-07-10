@@ -9,9 +9,10 @@ api_key = os.getenv("TMDB_API_KEY")
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
 MAX_PAGE = 100
+LEN = "en-US"
 
 
-#MAKE A LIST OF ALL THE MOVIES TIL PAGE 100 APROX. 2000 MOVIES
+#MAKE A LIST OF ALL THE MOVIES TIL PAGE 100 APROX. 1600 MOVIES DEPENDING ON THE LEN
 def MovieList():
     movies = []
     i = 1
@@ -19,8 +20,8 @@ def MovieList():
 
     while i <= MAX_PAGE:
         response = requests.get(
-        TMDB_BASE_URL + f"/movie/popular?page={i}",
-        params={"api_key": api_key}
+        TMDB_BASE_URL + f"/discover/movie",
+        params={"api_key": api_key, "include_adult": "false", "language": LEN, "page": i, "sort_by": "popularity.desc", "vote_count.gte": 50}
         )
 
         response.raise_for_status()
@@ -80,9 +81,81 @@ def MovieDataBase():
     conn.close()
     print("Movies saved")
 
+def GenreList():
+    genres = []
+
+    response = requests.get(
+        TMDB_BASE_URL + f"/genre/movie/list",
+        params={"api_key": api_key}
+        )
+
+    response.raise_for_status()
+        
+    data = response.json()
+    genres = (data["genres"])
+    
+    return genres
+
+def GenreDataBase():
+    
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS genres (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        genre_id INTEGER NOT NULL UNIQUE,
+        name TEXT NOT NULL
+    )
+""")
+    
+    genreList = GenreList()
+
+    for g in genreList:
+        addGenre = (g["id"], g["name"])
+    
+        cursor.execute("INSERT OR IGNORE INTO genres (genre_id, name) VALUES (?,?)", addGenre)
+        
+    conn.commit()
+    conn.close()
+    print("Genres saved")
+
+def recommendation(movie):
+    recommendations = []
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT movie_id FROM movies WHERE title = ?", (movie,))
+    movieID = cursor.fetchall()
+
+    if not movieID:
+        return []
+    
+    response = requests.get(
+        TMDB_BASE_URL + f"/movie/{movieID[0][0]}/recommendations",
+        params={"api_key": api_key}
+    )
+
+    response.raise_for_status()
+    data = response.json()
+
+    movieRecomendations = data["results"]
+
+    for mr in movieRecomendations:
+        recommendations.append(mr["id"])
+
+    markers = ", ".join(["?"] * len(recommendations))
+
+    cursor.execute(f"SELECT * FROM movies WHERE movie_id IN ({markers})", recommendations)
+    
+    
+    return(cursor.fetchall())
+
+
 
 def main():
     MovieDataBase()
+    GenreDataBase()
 
 if __name__ == "__main__":
     main()

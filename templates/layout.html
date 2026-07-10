@@ -42,14 +42,14 @@
 
                 <div class="collapse collapse-horizontal nav-collapse" id="Menu">
                     <div class="sidebarhead pt-3 ps-4">
-                        <h3> <span class="material-symbols-outlined">Movie</span> Movies </h3>
+                        <h3> <span class="material-symbols-outlined">Movie</span> I  </h3>
                     </div>
                     <hr class="ms-3">
 
                     <ul class="navbar-nav">
-                        <li class="nav-item ms-2"><a class="nav-link" href="/Recomendations"><i
+                        <li class="nav-item ms-2"><a class="nav-link" href="/recomendations"><i
                                     class="bi bi-camera-reels me-2"></i>Recomend a movie</a></li>
-                        <li class="nav-item ms-2"><a class="nav-link" href="/GuessTheMovie"><i
+                        <li class="nav-item ms-2"><a class="nav-link" href="/guessthemovie"><i
                                     class="bi bi-joystick me-2"></i>Guess the movie</a></li>
 
                         <li class="nav-item ms-2 mt-4"><a class="nav-link" href="/Settings"><i
@@ -59,12 +59,84 @@
             </nav>
         </div>
         <main class="content">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-warning" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             {% block content %}
             {% endblock %}
+
         </main>
     </div>
 
 </body>
+
+<script>
+
+    const input = document.getElementById("movie");
+    const movieList = document.getElementById("movie-list");
+    const options = movieList.querySelectorAll(".autocomplete-option");
+    let currentFocus = -1;
+
+    input.onfocus = function () {
+        movieList.style.display = "block";
+    };
+
+    document.addEventListener("click", function (e) {
+        if (e.target !== input) {
+            movieList.style.display = "none";
+        }
+    });
+
+    options.forEach(option => {
+        option.addEventListener("click", function () {
+            input.value = this.dataset.value;
+            movieList.style.display = "none";
+        });
+    });
+
+    input.oninput = function () {
+        const text = input.value.toUpperCase();
+        options.forEach(option => {
+            option.style.display = option.dataset.value.toUpperCase().includes(text) ? "block" : "none";
+        });
+        currentFocus = -1;
+    };
+
+    input.onkeydown = function (e) {
+        const visibleOptions = Array.from(options).filter(o => o.style.display !== "none");
+        if (e.keyCode == 40) { // down
+            currentFocus++;
+            addActive(visibleOptions);
+        } else if (e.keyCode == 38) { // up
+            currentFocus--;
+            addActive(visibleOptions);
+        } else if (e.keyCode == 13) { // enter
+            e.preventDefault();
+            if (currentFocus > -1 && visibleOptions[currentFocus]) {
+                visibleOptions[currentFocus].click();
+            }
+        }
+    };
+
+    function addActive(visibleOptions) {
+        removeActive();
+        if (currentFocus >= visibleOptions.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = visibleOptions.length - 1;
+        visibleOptions[currentFocus].classList.add("active");
+    }
+
+    function removeActive() {
+        options.forEach(o => o.classList.remove("active"));
+    }
+
+</script>
 
 
 </html>

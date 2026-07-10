@@ -19,15 +19,21 @@ hr {
 
 }
 
+h2{
+    color: #e8e9eb;
+    padding: 10px;
+    font-size: 30px;
+    text-align: center;
+}
 
-p, label{
+label{
     color: #e8e9eb;
     padding: 10px;
     font-size: 20px;
     text-align: center;
 }
 
-li{
+li,p{
     color: #252b4f;
     padding: 10px;
     font-size: 20px;
@@ -119,11 +125,18 @@ li{
     background-image: linear-gradient(to bottom, #4067f6, #6da1f7);
     border-radius: 10px;
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
-    width: 45%;
+    width: 60%;
     padding: 2rem;
     margin: 0 auto;
     gap: 1rem;
 
+}
+
+@media screen and (max-width: 600px){
+    .form-background {
+        width: 90%;
+        padding: .5rem;
+    }
 }
 
 .forms{
@@ -179,10 +192,50 @@ li{
 
 .form-control {
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+    width: 300px;
 }
 
-datalist option{
-    width: 200px;
-    background-color: #e8e9eb;
-    color: #070b26;
+.table {
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+
+}
+
+.table thead th {
+    background-color: #070b26;
+    color: #edeff2;
+    text-align: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.table thead th:first-of-type {
+    border-top-left-radius: 20px;
+
+}
+
+.table thead th:last-of-type {
+    border-top-right-radius: 20px;
+}
+
+.table tbody td {
+    text-align: center;
+}
+
+#poster{
+    filter: blur(8px);
+}
+
+.autocomplete-list {
+    display: none;
+    position: absolute;
+    z-index:1000;
+    background-color: white;
+    width: 100%;
+    border-radius: 10px;
+    max-height:160px;
+    overflow-y:auto;
+    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
