@@ -62,7 +62,6 @@ def guess():
     randomPosterFinal = []
     if request.method == 'POST':
         if str(request.form.get('movie')).lower() == str(request.form.get('movie_title')).lower():
-            flash("Correct! +100pts")
             score = int(request.form.get('score')) + 100
             guesses = int(request.form.get('guesses'))
 

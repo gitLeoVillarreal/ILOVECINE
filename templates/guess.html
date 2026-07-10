@@ -5,26 +5,9 @@
 {% block content %}
 <div class="form-background">
     <h2>Guess the movie by its poster:</h2>
-    <div class="row">
-        <div class="col-sm">
-            <button class = "btn btn-primary">Score: {{ randomPoster['score'] }} </button>
-        </div>
-        <div class="col-sm">
-            <button class = "btn btn-primary">Guesses: {{ randomPoster['guesses'] }} </button>
-        </div>
-
-    </div>  
-    
-    <div class="card">
-            <div class="row g-0">
-                <div class="col">
-                    <img src="{{ randomPoster['poster_url'] }}" class="img-fluid rounded-start" id = "poster" alt="Random Movie" width="300">
-                </div>
-            </div>
-        </div>
     <form class="form-inline" method="post">
-        <input type="hidden" name="score" id = "score" value="{{ randomPoster['score'] }}">
-        <input type="hidden" name="guesses" id = "guesses" value="{{ randomPoster['guesses'] }}">
+        <input type="hidden" name="score" id="score" value="{{ randomPoster['score'] }}">
+        <input type="hidden" name="guesses" id="guesses" value="{{ randomPoster['guesses'] }}">
         <input type="hidden" name="movie_id" value="{{ randomPoster['movie_id'] }}">
         <input type="hidden" name="movie_title" id="movie_title" value="{{ randomPoster['title'] }}">
 
@@ -43,7 +26,25 @@
         </div>
         <button class="btn btn-primary" id="guess-button" onclick="GuessMovie()" type="submit">Guess</button>
     </form>
-    
+
+    <div class="card">
+        <div class="row g-0">
+            <div class="col">
+                <img src="{{ randomPoster['poster_url'] }}" class="img-fluid rounded-start" id="poster"
+                    alt="Random Movie" width="250">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <button class="btn btn-primary">Score: {{ randomPoster['score'] }} </button>
+        </div>
+        <div class="col-sm">
+            <button class="btn btn-primary">Guesses: {{ randomPoster['guesses'] }} </button>
+        </div>
+
+    </div>
+
 </div>
 
 <script>
@@ -54,34 +55,34 @@
     const score = parseInt(document.getElementById('score').value);
     let clicks = guesses;
     function GuessMovie() {
-        event.preventDefault(); 
-        if(movieTitle.localeCompare(movieGuess) == 0) {
+        //event.preventDefault();
+        if (movieTitle.localeCompare(movieGuess) == 0) {
             console.log("Correct guess!");
-            
-        }else{
+
+        } else {
 
             revealPoster(clicks);
         }
     }
-    
+
     function revealPoster(clicks) {
         //console.log(clicks);
         const poster = document.getElementById('poster');
-        if(clicks === 1) {
+        if (clicks === 1) {
             poster.style.filter = 'blur(8px)';
-            
-        } else if(clicks === 2) {
+
+        } else if (clicks === 2) {
             poster.style.filter = 'blur(6px)';
-            
-        } else if(clicks === 3) {
+
+        } else if (clicks === 3) {
             poster.style.filter = 'blur(4px)';
-            
-        } else if(clicks === 4) {
+
+        } else if (clicks === 4) {
             poster.style.filter = 'blur(2px)';
-            
-        }else if (clicks > 4){
+
+        } else if (clicks > 4) {
             poster.style.filter = 'blur(0px)';
-            
+
         }
     }
 
