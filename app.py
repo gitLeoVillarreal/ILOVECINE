@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, redirect, render_template, request
+from flask import Flask, flash, redirect, render_template, request, session
 import sqlite3
 import json
 from helpers import recommendation
@@ -7,8 +7,10 @@ from helpers import recommendation
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
+
 @app.route('/')
 def index():
+    session['maxScore'] = 0
     return redirect("/recomendations")
 
 @app.route('/recomendations', methods=['GET', 'POST'])
@@ -61,6 +63,7 @@ def guess():
     movies = cursor.fetchall()
     randomPosterFinal = []
     if request.method == 'POST':
+        
         if str(request.form.get('movie')).lower() == str(request.form.get('movie_title')).lower():
             score = int(request.form.get('score')) + 100
             guesses = int(request.form.get('guesses'))
@@ -83,8 +86,15 @@ def guess():
             return render_template('guess.html', movies=movies, randomPoster=randomPosterFinal)
             
         else:
-            score = int(request.form.get('score')) - (10 * int(request.form.get('guesses')))
             guesses = int(request.form.get('guesses')) + 1
+            score = int(request.form.get('score')) - (10 * guesses)
+            if guesses >= 5:
+                if score > session['maxScore']:
+                    session['maxScore'] = score
+                flash(f"Game over! Your final score is {score}. Your highest score is {session['maxScore']}.")
+                return redirect("/guessthemovie")
+            flash(f"Incorrect guess! You have {5 - guesses} guesses left.")
+            
         
         movie_id = request.form.get('movie_id')
         movie_title = request.form.get('movie_title')
