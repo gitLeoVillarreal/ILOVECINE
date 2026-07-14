@@ -89,7 +89,7 @@ def guess():
             guesses = int(request.form.get('guesses')) + 1
             score = int(request.form.get('score')) - (10 * guesses)
             if guesses >= 5:
-                if score > session['maxScore']:
+                if score > session.get('maxScore', 0):
                     session['maxScore'] = score
                 flash(f"Game over! Your final score is {score}. Your highest score is {session['maxScore']}.")
                 return redirect("/guessthemovie")
