@@ -11,7 +11,7 @@ app.secret_key = os.getenv("SECRET_KEY")
 @app.route('/')
 def index():
     session['maxScore'] = 0
-    return redirect("/recomendations")
+    return render_template("home.html")
 
 @app.route('/recomendations', methods=['GET', 'POST'])
 def recommend():

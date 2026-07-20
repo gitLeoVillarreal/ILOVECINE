@@ -5,6 +5,7 @@
 {% block content %}
 <div class="form-background">
     <h2>Guess the movie by its poster:</h2>
+    <div class="forms">
     <form class="form-inline" method="post">
         <input type="hidden" name="score" id="score" value="{{ randomPoster['score'] }}">
         <input type="hidden" name="guesses" id="guesses" value="{{ randomPoster['guesses'] }}">
@@ -24,6 +25,7 @@
         </div>
         <button class="btn btn-primary" id="guess-button" type="submit">Guess</button>
     </form>
+    
 
     <div class="card">
         <div class="row g-0">
@@ -45,6 +47,7 @@
         </div>
 
     </div>
+    </div>
 
 </div>
 
@@ -60,7 +63,7 @@
             console.log("Correct!")
         }
         else{
-            event.preventDefault();
+            //event.preventDefault();
             document.getElementById('guesses').value = clicks;
             revealPoster(clicks);
         }

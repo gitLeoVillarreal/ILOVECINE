@@ -43,7 +43,7 @@ def MovieList():
 
 #SEARCH AND RETURN THE MOST VOTED POSTER OF A MOVIE BY MOVIE_ID
 
-def lookupPoster(poster):
+def LookupPoster(poster):
     if poster:
         return f"https://image.tmdb.org/t/p/w500{poster}?"
     else:
@@ -73,7 +73,7 @@ def MovieDataBase():
 
     for m in moviesList:
 
-        addMovie = (m["id"], m["title"], lookupPoster(m["poster_path"]), str(m["genre_ids"]), m["popularity"], m["vote_average"], m["release_date"])
+        addMovie = (m["id"], m["title"], LookupPoster(m["poster_path"]), str(m["genre_ids"]), m["popularity"], m["vote_average"], m["release_date"])
     
         cursor.execute("INSERT OR IGNORE INTO movies (movie_id, title, poster_url, genre_ids, popularity, rating, release_date) VALUES (?,?,?,?,?,?,?)", addMovie)
         

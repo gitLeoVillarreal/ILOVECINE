@@ -5,6 +5,7 @@
 {% block content %}
 <div class="form-background">
     <h2>Recommend movies:</h2>
+<div class = "forms">
     <form class="form-inline" method="post">
         <label for="movie"> Insert a movie you liked: </label>
         <div class="autocomplete-wrapper" style="position:relative;">
@@ -21,6 +22,7 @@
         </div>
         <button class="btn btn-primary" type="submit">Recommend</button>
     </form>
+</div>
     {% if recommendedMovie %}
     <table class="table table-striped d-none d-md-table">
         <thead>

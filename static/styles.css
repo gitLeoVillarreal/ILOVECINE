@@ -14,14 +14,14 @@ hr {
     border: none;
     padding: 0;
     height: 1px;
-    width: 200px;
+    width: 275px;
     background-color: #edeff2;
 
 }
 
-h2{
+h2,h3{
     color: #e8e9eb;
-    padding: 10px;
+    padding: 8px;
     font-size: 30px;
     text-align: center;
 }
@@ -33,11 +33,19 @@ label{
     text-align: center;
 }
 
-li,p{
-    color: #252b4f;
+p{
+    color: #e8e9eb;
     padding: 10px;
     font-size: 20px;
-    text-align: justify;
+    align-items: left;
+}
+
+li{
+    color: #d3e6f3;
+    padding: 10px;
+    font-size: 20px;
+    text-align: left;
+    
 }
 
 .layout {
@@ -64,7 +72,7 @@ li,p{
 }
 
 .nav-link:hover {
-    background-color: #91c8ff;
+    background-color: #f7b900fa;
     color: #070b26;
     transition: 500ms;
 }
@@ -116,13 +124,19 @@ li,p{
     padding: 5px;
 }
 
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 30%;
+}
+
 .form-background {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #5b95f5;
-    background-image: linear-gradient(to bottom, #4067f6, #6da1f7);
+    background-color: #f7b900fa;
+    background-image: linear-gradient(to bottom, #f7b900fa, #fac935fa);
     border-radius: 10px;
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
     width: 60%;
@@ -139,15 +153,27 @@ li,p{
     }
 }
 
+.presentation{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    background-color:#070b26;
+    border-radius: 10px;
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, .05);;
+    padding: 2rem;
+    margin: 0 auto;
+    gap: 1rem;
+}
+
 .forms{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-image: linear-gradient(to bottom, #fcfdff, #e8e9eb);
+    background-color:#070b26;
     border-radius: 10px;
-    box-shadow: 0px 8px 12px rgba(0, 0, 0, .2);
-    width: 50%;
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, .05);;
     padding: 2rem;
     margin: 0 auto;
     gap: 1rem;
@@ -174,9 +200,9 @@ li,p{
 
 .btn-primary {
     display: inline-block;
-    background-color: #070b26;
+    background-color: #f7b900fa;
     color: #edeff2;
-    border-color: #070b26;
+    border-color: #FFBF00;
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
     width: max-content;
     flex-wrap: wrap;
@@ -184,9 +210,9 @@ li,p{
 }
 
 .btn-primary:hover {
-    background-color: #252b4f;
+    background-color: #ffd043;
     color: aliceblue;
-    border-color: #252b4f;
+    border-color: #ffd043;
     transition: 250ms;
 }
 
