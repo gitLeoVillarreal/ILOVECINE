@@ -28,11 +28,11 @@ My web app it's designed with HTML and CSS and also has a backend with Python's 
 ##### helpers.py
 Here is all the movie's info collection. In this file you will find two constant variables: **LEN** and **MAX_PAGE**. You can change it if you want to. Also, it will have many functions but only 2 are needed at ***main()**
 **MovieDataBase()** and **GenreDataBase()** that creates the database that will be used by the app. Functions:
-- MovieList(): This function returns a list with all the movie's info requested in a json format that will be used like a python dictionary to be sorted by popularity.
-- LookupPoster(poster): Check if there is a poster. If it's true, then return the poster_url to use as an image. If not, the function will return a "Not Found" string.
-- GenreList(): This function returns a list with all the genre info requested in a json format that will be used like a python dictionary.
-- GenreDataBase(): This function creates the table **genres** and calls the function **GenreList()**. It will insert every genre in the GenreList result via SQL query with the help of a loop.
-- MovieDataBase(): This function creates the table **movies** and calls the function **MoviesList()**. It will insert every movie in the MovieList result via SQL query with the help of a loop. Every movie stores its genres as a comma-separated list of genre IDs, which is why the genres table is used to resolve them into names.
+- `MovieList()`: This function returns a list with all the movie's info requested in a json format that will be used like a python dictionary to be sorted by popularity.
+- `LookupPoster(poster)`: Check if there is a poster. If it's true, then return the poster_url to use as an image. If not, the function will return a "Not Found" string.
+- `GenreList()`: This function returns a list with all the genre info requested in a json format that will be used like a python dictionary.
+- `GenreDataBase()`: This function creates the table **genres** and calls the function **GenreList()**. It will insert every genre in the GenreList result via SQL query with the help of a loop.
+- `MovieDataBase()`: This function creates the table **movies** and calls the function **MoviesList()**. It will insert every movie in the MovieList result via SQL query with the help of a loop. Every movie stores its genres as a comma-separated list of genre IDs, which is why the genres table is used to resolve them into names.
 
 Also, I want to add the database schema that I used for the tables:
 
