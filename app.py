@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session
 import sqlite3
 import json
-from helpers import recommendation
+from helpers import recommendation, connection
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -15,8 +15,8 @@ def index():
 
 @app.route('/recomendations', methods=['GET', 'POST'])
 def recommend():
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
+    db = connection()
+    cursor = db.cursor()
     
     cursor.execute("SELECT * FROM movies")
     movies = cursor.fetchall()
@@ -45,20 +45,18 @@ def recommend():
                 "rating": rm[6],
                 "release_date": rm[7]}
             )
-        cursor.close()
-        conn.close()
+        db.close()
         return render_template('recommend.html', movies=movies, recommendedMovie=recommendMovieFinal)
     else:
         
-        cursor.close()
-        conn.close()
+        db.close()
 
         return render_template('recommend.html', movies=movies)
 
 @app.route('/guessthemovie', methods=['GET', 'POST'])
 def guess():
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
+    db = connection()
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM movies")
     movies = cursor.fetchall()
     randomPosterFinal = []
@@ -82,7 +80,7 @@ def guess():
                 "score": score,
                 "guesses": 0
             }
-            
+            db.close()
             return render_template('guess.html', movies=movies, randomPoster=randomPosterFinal)
             
         else:
@@ -91,8 +89,11 @@ def guess():
             if guesses >= 5:
                 if score > session.get('maxScore', 0):
                     session['maxScore'] = score
+
                 flash(f"Game over! Your final score is {score}. Your highest score is {session['maxScore']}.")
+                db.close()
                 return redirect("/guessthemovie")
+
             flash(f"Incorrect guess! You have {5 - guesses} guesses left.")
             
         
@@ -108,6 +109,7 @@ def guess():
             "guesses": guesses
         }
         #print(randomPosterFinal, "post")
+        db.close()
         return render_template('guess.html', movies=movies, randomPoster=randomPosterFinal)
 
     else:
@@ -127,4 +129,5 @@ def guess():
         }
 
         #print(randomPosterFinal, "get")
+        db.close()
         return render_template('guess.html', movies=movies, randomPoster=randomPosterFinal)

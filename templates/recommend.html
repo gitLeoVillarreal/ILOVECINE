@@ -9,7 +9,7 @@
     <form class="form-inline" method="post">
         <label for="movie"> Insert a movie you liked: </label>
         <div class="autocomplete-wrapper" style="position:relative;">
-            <input class="form-control" name="movie" id="movie" autocomplete="off"
+            <input class="form-control" type = "search" name="movie" id="movie" autocomplete="off"
                 value="{{ request.form.get('movie', '') }}">
             <div id="movie-list" class="autocomplete-list">
                 {% for m in movies %}

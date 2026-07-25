@@ -11,6 +11,9 @@ TMDB_BASE_URL = "https://api.themoviedb.org/3"
 MAX_PAGE = 100
 LEN = "en-US"
 
+def connection():
+    conn = sqlite3.connect("MoviesDB.db")
+    return conn
 
 #MAKE A LIST OF ALL THE MOVIES TIL PAGE 100 APROX. 1600 MOVIES DEPENDING ON THE LEN
 def MovieList():
@@ -21,7 +24,7 @@ def MovieList():
     while i <= MAX_PAGE:
         response = requests.get(
         TMDB_BASE_URL + f"/discover/movie",
-        params={"api_key": api_key, "include_adult": "false", "language": LEN, "page": i, "sort_by": "popularity.desc", "vote_count.gte": 50}
+        params={"api_key": api_key, "include_adult": "false", "language": LEN, "page": i, "sort_by": "popularity.desc", "vote_count.gte": 80}
         )
 
         response.raise_for_status()
@@ -53,8 +56,8 @@ def LookupPoster(poster):
 
 def MovieDataBase():
     
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
+    db = connection()
+    cursor = db.cursor()
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS movies (
@@ -77,8 +80,8 @@ def MovieDataBase():
     
         cursor.execute("INSERT OR IGNORE INTO movies (movie_id, title, poster_url, genre_ids, popularity, rating, release_date) VALUES (?,?,?,?,?,?,?)", addMovie)
         
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
     print("Movies saved")
 
 def GenreList():
@@ -98,8 +101,8 @@ def GenreList():
 
 def GenreDataBase():
     
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
+    db = connection()
+    cursor = db.cursor()
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS genres (
@@ -115,15 +118,14 @@ def GenreDataBase():
         addGenre = (g["id"], g["name"])
     
         cursor.execute("INSERT OR IGNORE INTO genres (genre_id, name) VALUES (?,?)", addGenre)
-        
-    conn.commit()
-    conn.close()
+    db.commit()    
+    db.close()
     print("Genres saved")
 
 def recommendation(movie):
     recommendations = []
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
+    db = connection()
+    cursor = db.cursor()
 
     cursor.execute("SELECT movie_id FROM movies WHERE title = ?", (movie,))
     movieID = cursor.fetchall()
@@ -147,9 +149,11 @@ def recommendation(movie):
     markers = ", ".join(["?"] * len(recommendations))
 
     cursor.execute(f"SELECT * FROM movies WHERE movie_id IN ({markers})", recommendations)
-    
-    
-    return(cursor.fetchall())
+    recommendedMovies = cursor.fetchall()
+
+    db.commit()
+    db.close()
+    return(recommendedMovies)
 
 
 
