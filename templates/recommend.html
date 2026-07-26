@@ -13,9 +13,9 @@
                 value="{{ request.form.get('movie', '') }}">
             <div id="movie-list" class="autocomplete-list">
                 {% for m in movies %}
-                <div class="autocomplete-option" data-value="{{ m[2] }}" style="padding:5px; cursor:pointer;">
-                    <img src="{{ m[3] }}" alt="{{ m[2] }}" width="40">
-                    {{ m[2] }}
+                <div class="autocomplete-option" data-value="{{ m['title'] }}" style="padding:5px; cursor:pointer;">
+                    <img src="{{ m['poster_url'] }}" alt="{{ m['title'] }}" width="40">
+                    {{ m['title'] }}
                 </div>
                 {% endfor %}
             </div>
@@ -24,7 +24,7 @@
     </form>
 </div>
     {% if recommendedMovie %}
-    <table class="table table-striped d-none d-md-table">
+    <table class="table table-striped d-none d-md-table mb-3">
         <thead>
             <tr>
                 <th scope="col">Poster</th>

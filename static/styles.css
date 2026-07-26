@@ -7,7 +7,7 @@
 body {
     font-family: "Stack Sans Text", sans-serif;
     background: #f0f0f0;
-background: linear-gradient(179deg, rgba(240, 240, 240, 1) 0%, rgba(203, 244, 247, 1) 100%, rgba(163, 162, 160, 1) 0%);
+    background: linear-gradient(179deg, rgba(240, 240, 240, 1) 0%, rgba(203, 244, 247, 1) 100%, rgba(163, 162, 160, 1) 0%);
 }
 
 hr {
@@ -19,33 +19,34 @@ hr {
 
 }
 
-h2,h3{
+h2,
+h3 {
     color: #e8e9eb;
     padding: 8px;
     font-size: 30px;
     text-align: center;
 }
 
-label{
+label {
     color: #e8e9eb;
     padding: 10px;
     font-size: 20px;
     text-align: center;
 }
 
-p{
-    color: #e8e9eb;
+p {
+    color: #070b26;
     padding: 10px;
     font-size: 20px;
     align-items: left;
 }
 
-li{
+li {
     color: #d3e6f3;
     padding: 10px;
     font-size: 20px;
     text-align: left;
-    
+
 }
 
 .layout {
@@ -139,44 +140,54 @@ li{
     background-image: linear-gradient(to bottom, #f7b900fa, #fac935fa);
     border-radius: 10px;
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
-    width: 60%;
-    padding: 2rem;
+    width: 65%;
+    padding: .5rem;
     margin: 0 auto;
     gap: 1rem;
 
 }
 
-@media screen and (max-width: 600px){
+@media screen and (max-width: 600px) {
     .form-background {
-        width: 90%;
+        width: 100%;
         padding: .5rem;
+    }
+
+    .form-control {
+        width: 60%;
+    }
+
+    .poster-img {
+        width: 150px;
     }
 }
 
-.presentation{
+.presentation {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: left;
-    background-color:#070b26;
+    background-color: #070b26;
     border-radius: 10px;
-    box-shadow: 0px 8px 12px rgba(0, 0, 0, .05);;
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, .05);
+    ;
     padding: 2rem;
     margin: 0 auto;
     gap: 1rem;
 }
 
-.forms{
+.forms {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color:#070b26;
+    background-color: #070b26;
     border-radius: 10px;
-    box-shadow: 0px 8px 12px rgba(0, 0, 0, .05);;
-    padding: 2rem;
-    margin: 0 auto;
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, .05);
+    padding: 1rem;
+    margin: .5rem;
     gap: 1rem;
+    flex-wrap: wrap;
 
 }
 
@@ -187,33 +198,33 @@ li{
     gap: 10px;
     align-items: center;
     flex-wrap: wrap;
-
 }
 
-.form-inline
-.form-control{
+.form-inline .form-control {
     flex: 1;
     min-width: 0;
 }
 
 
-
 .btn-primary {
     display: inline-block;
-    background-color: #f7b900fa;
-    color: #edeff2;
-    border-color: #FFBF00;
-    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
     width: max-content;
     flex-wrap: wrap;
+    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
 
-}
+    --bs-btn-bg: #f7b900fa;
+    --bs-btn-border-color: #FFBF00;
+    --bs-btn-color: white;
 
-.btn-primary:hover {
-    background-color: #ffd043;
-    color: aliceblue;
-    border-color: #ffd043;
-    transition: 250ms;
+    --bs-btn-hover-bg: #ffd043;
+    --bs-btn-hover-border-color: #ffd043;
+    --bs-btn-hover-color: white;
+
+    --bs-btn-active-bg: #ffd043;
+    --bs-btn-active-border-color: #ffd043;
+    --bs-btn-active-color: white;
+
+    --bs-btn-focus-shadow-rgb: 255, 208, 67;
 }
 
 .form-control {
@@ -223,7 +234,7 @@ li{
 }
 
 .table {
-    width: 100%;
+    width: 95%;
     margin: 0 auto;
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
     justify-content: center;
@@ -251,18 +262,35 @@ li{
     text-align: center;
 }
 
-#poster{
+.poster-img {
+    width: 225px;
+}
+
+#poster {
     filter: blur(8px);
+
 }
 
 .autocomplete-list {
     display: none;
     position: absolute;
-    z-index:1000;
+    z-index: 1000;
     background-color: white;
     width: 100%;
     border-radius: 10px;
-    max-height:160px;
-    overflow-y:auto;
+    max-height: 160px;
+    overflow-y: auto;
     box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.stat-shower {
+    display: flex;
+    background-color: transparent;
+    border: 1.5px solid #f7b900fa;
+    color: #edeff2;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    flex-wrap: wrap;
+    width: max-content;
 }

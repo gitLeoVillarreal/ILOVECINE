@@ -5,7 +5,7 @@
 {% block content %}
 <div class="form-background">
     <h2>Guess the movie by its poster:</h2>
-    <div class="forms">
+    <div class="forms mb-4">
     <form class="form-inline" method="post">
         <input type="hidden" name="score" id="score" value="{{ randomPoster['score'] }}">
         <input type="hidden" name="guesses" id="guesses" value="{{ randomPoster['guesses'] }}">
@@ -30,20 +30,20 @@
     <div class="card">
         <div class="row g-0">
             <div class="col">
-                <img src="{{ randomPoster['poster_url'] }}" class="img-fluid rounded-start" id="poster"
-                    alt="Random Movie" width="250">
+                <img src="{{ randomPoster['poster_url'] }}" class="img-fluid poster-img" id="poster"
+                    alt="Random Movie">
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm">
-            <button class="btn btn-primary">Score: {{ randomPoster['score'] }} </button>
+        <div class="col-sm mt-2">
+            <span class="stat-shower">Score: {{ randomPoster['score'] }} </span>
         </div>
-        <div class="col-sm">
-            <button class="btn btn-primary">Guesses: {{ randomPoster['guesses'] }} </button>
+        <div class="col-sm mt-2">
+            <span class="stat-shower">Guesses: {{ randomPoster['guesses'] }} </span>
         </div>
-        <div class="col-sm">
-            <button class="btn btn-primary">Max Score: {{ session['maxScore'] }} </button>
+        <div class="col-sm mt-2">
+            <span class="stat-shower">Max Score: {{ session['maxScore'] }} </span>
         </div>
 
     </div>

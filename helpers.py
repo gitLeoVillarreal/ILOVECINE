@@ -11,9 +11,23 @@ TMDB_BASE_URL = "https://api.themoviedb.org/3"
 MAX_PAGE = 100
 LEN = "en-US"
 
-def connection():
-    conn = sqlite3.connect("MoviesDB.db")
+def Connection():
+    conn = sqlite3.connect("ILoveCineDB.db")
+    conn.row_factory = sqlite3.Row
     return conn
+
+def UsersDataBase():
+    db = Connection()
+    cursor = db.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NO EXISTS users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        hash TEXT NOT NULL,
+        max_score INTEGER NOT NULL DEFAULT 0
+        )
+""")
 
 #MAKE A LIST OF ALL THE MOVIES TIL PAGE 100 APROX. 1600 MOVIES DEPENDING ON THE LEN
 def MovieList():
@@ -56,7 +70,7 @@ def LookupPoster(poster):
 
 def MovieDataBase():
     
-    db = connection()
+    db = Connection()
     cursor = db.cursor()
 
     cursor.execute("""
@@ -101,7 +115,7 @@ def GenreList():
 
 def GenreDataBase():
     
-    db = connection()
+    db = Connection()
     cursor = db.cursor()
 
     cursor.execute("""
@@ -124,7 +138,7 @@ def GenreDataBase():
 
 def recommendation(movie):
     recommendations = []
-    db = connection()
+    db = Connection()
     cursor = db.cursor()
 
     cursor.execute("SELECT movie_id FROM movies WHERE title = ?", (movie,))
@@ -155,11 +169,26 @@ def recommendation(movie):
     db.close()
     return(recommendedMovies)
 
+def random_poster_movie(cursor):
+    cursor.execute("SELECT movie_id FROM movies ORDER BY RANDOM() LIMIT 1")
+    randomMovieId = cursor.fetchone()
+
+    cursor.execute("SELECT title, poster_url FROM movies WHERE movie_id = ?", (randomMovieId['movie_id'],))
+    randomPoster = cursor.fetchone()
+
+    randomPosterFinal = {
+        'movie_id': randomMovieId['movie_id'],
+        'title': randomPoster['title'],
+        'poster_url': randomPoster['poster_url']
+    }
+
+    return randomPosterFinal
 
 
 def main():
     MovieDataBase()
     GenreDataBase()
+    UsersDataBase()
 
 if __name__ == "__main__":
     main()
