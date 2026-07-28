@@ -53,6 +53,8 @@
                                     class="bi bi-camera-reels me-2"></i>Recomend a movie</a></li>
                         <li class="nav-item ms-2"><a class="nav-link" href="/guessthemovie"><i
                                     class="bi bi-joystick me-2"></i>Guess the movie</a></li>
+                        <li class="nav-item ms-2"><a class="nav-link" href="/profile/{session['username']}"><i
+                                    class="bi bi-person-circle me-2 mt-5"></i>{{session['username']}}</a></li>
                     </ul>
                     {% else %}
                     <ul class="navbar-nav">

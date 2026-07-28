@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 secret_key = os.getenv("SECRET_KEY")
 if not secret_key:
-    raise ValueError("Falta la variable de entorno SECRET_KEY")
+    raise ValueError("Theres no SECRET_KEY at env variables")
 app.secret_key = secret_key
 
 @app.route('/')
@@ -18,8 +18,41 @@ def index():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+
+    session.clear()
+
     if request.method == "POST":
-        pass
+        ph = PasswordHasher()
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if username:
+            try:
+                db = Connection()
+                cursor = db.cursor()
+
+                cursor.execute("SELECT id, hash FROM users WHERE username = ?", (username,))
+                row = cursor.fetchall()
+
+                if row is None:
+                    flash("Invalid values!", 'error')
+                    return render_template("login.html")
+                userID, hash_p = row[0][0], row[0][1]
+
+                print(userID, hash_p)
+
+                ph.verify(hash_p, password)
+
+                db.close()
+
+                session["user_id"] = userID
+                session["username"] = username
+                flash(f"Welcome {username} to I Love Cine", 'message')
+                return redirect("/")
+                
+            except Exception as e:
+                flash("Invalid values!", 'error')
+                print(e)
+                return render_template("login.html")
     else:
         return render_template("login.html")
 

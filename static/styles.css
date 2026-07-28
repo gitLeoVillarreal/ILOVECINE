@@ -109,6 +109,10 @@ li {
     color: #edeff2;
 }
 
+.sidebarhead h3{
+    color:#edeff2;
+}
+
 
 
 .navbar-toggler {
@@ -348,4 +352,8 @@ li {
     border-radius: 5px;
     padding: 10px;
     font-size: 18px;
+}
+
+.card li, h3{
+    color:#070b26;
 }
