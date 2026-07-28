@@ -4,13 +4,14 @@
 
 {% block content %}
 <div class="form-background">
-    <h2>Recommend movies:</h2>
+    
 <div class = "forms">
+    <h2>Recommend movies:</h2>
     <form class="form-inline" method="post">
         <label for="movie"> Insert a movie you liked: </label>
         <div class="autocomplete-wrapper" style="position:relative;">
             <input class="form-control" type = "search" name="movie" id="movie" autocomplete="off"
-                value="{{ request.form.get('movie', '') }}">
+                value="{{ request.form.get('movie', '') }}" placeholder = "Title">
             <div id="movie-list" class="autocomplete-list">
                 {% for m in movies %}
                 <div class="autocomplete-option" data-value="{{ m['title'] }}" style="padding:5px; cursor:pointer;">

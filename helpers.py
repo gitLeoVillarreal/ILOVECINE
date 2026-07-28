@@ -21,13 +21,14 @@ def UsersDataBase():
     cursor = db.cursor()
 
     cursor.execute("""
-    CREATE TABLE IF NO EXISTS users(
+    CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL,
         hash TEXT NOT NULL,
         max_score INTEGER NOT NULL DEFAULT 0
         )
 """)
+    print("Table users created")
 
 #MAKE A LIST OF ALL THE MOVIES TIL PAGE 100 APROX. 1600 MOVIES DEPENDING ON THE LEN
 def MovieList():

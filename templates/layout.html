@@ -45,7 +45,7 @@
                         <h3> <img src="static/favicon-512x512.png" class = "logo" alt="Logo"> I Love Cine </h3>
                     </div>
                     <hr class="ms-3">
-
+                    {% if session["user_id"] %}
                     <ul class="navbar-nav">
                         <li class="nav-item ms-2"><a class="nav-link" href="/"><i
                                     class="bi bi-house-door me-2"></i>Home</a></li>
@@ -53,26 +53,37 @@
                                     class="bi bi-camera-reels me-2"></i>Recomend a movie</a></li>
                         <li class="nav-item ms-2"><a class="nav-link" href="/guessthemovie"><i
                                     class="bi bi-joystick me-2"></i>Guess the movie</a></li>
-
                     </ul>
+                    {% else %}
+                    <ul class="navbar-nav">
+                        <li class="nav-item ms-2"><a class="nav-link" href="/login"><i
+                                    class="bi bi-person me-2"></i>Log In</a></li>
+                        <li class="nav-item ms-2"><a class="nav-link" href="/register"><i
+                                    class="bi bi-person-add me-2"></i>Register</a></li>
+                        <li class="nav-item ms-2"><a class="nav-link" href="/guessthemovie"><i
+                                    class="bi bi-joystick me-2"></i>Guess the movie</a></li>
+                    </ul>
+                    {% endif %}
                 </div>
             </nav>
         </div>
+        
         <main class="content">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-warning" role="alert">
-                {{ message }}
-            </div>
-            {% endfor %}
-            {% endif %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <ul class=flashes>
+                    {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             {% endwith %}
 
             {% block content %}
             {% endblock %}
 
         </main>
+        
     </div>
 
 </body>
