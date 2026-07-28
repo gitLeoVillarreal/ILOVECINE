@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="form-background">
+
+    <div class="forms">
+        <h2><i class="bi bi-person"></i> Register</h2>
+        <form class="form-group" method="post">
+            <div class="row">
+                <label for="username"><i class="bi bi-person-circle"></i> Username:</label>
+                <input class="form-control" name="username" id="username" placeholder="Username">
+            </div>
+            <div class="row">
+                <label for="password"><i class="bi bi-lock"></i> Password:</label>
+                <input class="form-control" name="password" id ="password" type="password" placeholder="Password">
+            </div>
+            <div class="row">
+                <label for="confirm"><i class="bi bi-lock"></i> Confirm Password:</label>
+                <input class="form-control" name="confirm" id = "confirm" type="password" placeholder="Comfirm password">
+            </div>
+            <div class="row mt-2">
+                <button class="btn btn-primary" type="submit" value="Register">Register</button>
+            </div>
+            <div class="row">
+                <p class = "redirect"> Already has an account. <a href = "/login">Log In.</a> </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

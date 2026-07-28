@@ -1,6 +1,7 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session
 import json
+from argon2 import PasswordHasher
 from helpers import recommendation, Connection, random_poster_movie
 
 app = Flask(__name__)
@@ -14,6 +15,44 @@ app.secret_key = secret_key
 def index():
     session['maxScore'] = 0
     return render_template("home.html")
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    if request.method == "POST":
+        pass
+    else:
+        return render_template("login.html")
+
+@app.route('/register', methods=['GET','POST'])
+def register():
+    if request.method == "POST":
+        ph = PasswordHasher()
+        username = request.form.get("username")
+        password = ph.hash(request.form.get("password"))
+        confirm = request.form.get("confirm")
+        if username:
+            try:
+                ph.verify(password, confirm)
+
+                db = Connection()
+                cursor = db.cursor()
+                values = (username, password, 0)
+                
+                try:
+                    cursor.execute("INSERT INTO users (username, hash, max_score) VALUES (?, ?, ?)", values)
+                    flash("Your account have been created!", 'message')
+                    db.commit()
+                    db.close()
+                    return redirect("/login")
+                except:
+                    flash("Username already in use!", 'alert')
+                    return render_template("register.html")
+            except Exception:
+                flash("Invalid values!", 'error')
+                return render_template("register.html")
+    else:
+        return render_template("register.html")
+
 
 @app.route('/recomendations', methods=['GET', 'POST'])
 def recommend():
@@ -29,7 +68,7 @@ def recommend():
         recommendMovie = recommendation(movie)
 
         if not recommendMovie:
-            flash("Movie not found in the database. Please try again.")
+            flash("Movie not found in the database. Please try again.", 'error')
             return render_template('recommend.html', movies=movies)
         
         for rm in recommendMovie:
@@ -92,7 +131,7 @@ def guess():
                 db.close()
                 return redirect("/guessthemovie")
 
-            flash(f"Incorrect guess! You have {5 - guesses} guesses left.")
+            flash(f"Incorrect guess! You have {5 - guesses} guesses left.", 'alert')
             
         
         movie_id = request.form.get('movie_id')
