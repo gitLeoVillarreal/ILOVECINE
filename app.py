@@ -142,10 +142,12 @@ def recommend():
 
 @app.route('/guessthemovie', methods=['GET', 'POST'])
 def guess():
-    if session['user_id'] != None:
+    if session.get("user_id"):
             session['maxScore'] = get_max_score(session['user_id'])
+
     else:
-        session['maxScore'] = 0
+       session['maxScore'] = session.get('maxScore', 0)
+       
     db = Connection()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM movies")
@@ -176,18 +178,19 @@ def guess():
             if guesses >= 5:
                 if score > int(session['maxScore']):
                     print(f"{score} > {session['maxScore']}")
-                    if session['user_id']:
+                    if session.get("user_id"):
                         print(session['user_id'])
                         set_max_score(session['user_id'], score)
                         session['maxScore'] = get_max_score(session['user_id'])
                     else:
+                        print(session['maxScore'])
                         session['maxScore'] = score
 
-                    flash(f"Game over! Your final score is {score}. Your new highest score is {session['maxScore']}.")
+                    flash(f"Game over! Your final score was {score}. Your new highest score is {session['maxScore']}.")
                     db.close()
                     return redirect("/guessthemovie")
                 
-                flash(f"Game over! Your final score is {score}. Your highest score is {session['maxScore']}.")
+                flash(f"Game over! Your final score was {score}. Your highest score is {session['maxScore']}.")
                 db.close()
                 return redirect("/guessthemovie")
 
