@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session
 import json
 from argon2 import PasswordHasher
-from helpers import recommendation, Connection, random_poster_movie
+from helpers import recommendation, Connection, random_poster_movie, get_max_score, set_max_score
 
 app = Flask(__name__)
 
@@ -13,8 +13,11 @@ app.secret_key = secret_key
 
 @app.route('/')
 def index():
-    session['maxScore'] = 0
-    return render_template("home.html")
+    if session['user_id']:
+        session['maxScore'] = get_max_score(session['user_id'])
+    else:
+        session['maxScore'] = 0
+    return redirect("/home")
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -33,7 +36,7 @@ def login():
                 cursor.execute("SELECT id, hash FROM users WHERE username = ?", (username,))
                 row = cursor.fetchall()
 
-                if row is None:
+                if not row:
                     flash("Invalid values!", 'error')
                     return render_template("login.html")
                 userID, hash_p = row[0][0], row[0][1]
@@ -61,15 +64,14 @@ def register():
     if request.method == "POST":
         ph = PasswordHasher()
         username = request.form.get("username")
-        password = ph.hash(request.form.get("password"))
+        password = request.form.get("password")
         confirm = request.form.get("confirm")
-        if username:
+        if username and password == confirm:
             try:
-                ph.verify(password, confirm)
-
+                hash_p = ph.hash(password)
                 db = Connection()
                 cursor = db.cursor()
-                values = (username, password, 0)
+                values = (username, hash_p, 0)
                 
                 try:
                     cursor.execute("INSERT INTO users (username, hash, max_score) VALUES (?, ?, ?)", values)
@@ -85,7 +87,21 @@ def register():
                 return render_template("register.html")
     else:
         return render_template("register.html")
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
+@app.route('/home')
+def home():
+    db = Connection()
+    cursor = db.cursor()
+    movies_home = []
+    for _ in range(1,30):
+        movies_home.append(random_poster_movie(cursor))
+    for m in movies_home:
+        print(m['title'])
+    return render_template("home.html", movies_home=movies_home)
 
 @app.route('/recomendations', methods=['GET', 'POST'])
 def recommend():
@@ -157,14 +173,20 @@ def guess():
             guesses = int(request.form.get('guesses')) + 1
             score = int(request.form.get('score')) - (10 * guesses)
             if guesses >= 5:
-                if score > session.get('maxScore', 0):
-                    session['maxScore'] = score
+                if score > session.get('maxScore'):
+                    
+                    if session['user_id']:
+                        print(session['user_id'])
+                        set_max_score(session['user_id'], score)
+                        session['maxScore'] = get_max_score(session['user_id'])
+                    else:
+                        session['maxScore'] = score
 
                 flash(f"Game over! Your final score is {score}. Your highest score is {session['maxScore']}.")
                 db.close()
                 return redirect("/guessthemovie")
 
-            flash(f"Incorrect guess! You have {5 - guesses} guesses left.", 'alert')
+            flash(f"Incorrect guess -{10 * guesses}pts! You have {5 - guesses} guesses left.", 'alert')
             
         
         movie_id = request.form.get('movie_id')

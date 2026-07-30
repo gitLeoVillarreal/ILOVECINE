@@ -1,6 +1,32 @@
 {% extends 'layout.html' %}
 
-{% block title %}Home{% endblock %}
-
+{% block title %} Home {% endblock %}
 {% block content %}
+<div class="form-background">
+    <div class="forms">
+        <h1>I LOVE CINE</h1>
+    </div>
+</div>
+<div class="movies-carousel">
+    <div class="carousel-track">
+       
+            {% for m in movies_home %}
+            <div class="card" style="min-width: 300px;">
+                <img src="{{m['poster_url']}}" class="card-img" style="height: 400px; object-fit: cover;">
+                <div class="card-body">
+                    <h4 class="card-title">{{m['title']}}</h4>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% for m in movies_home %}
+            <div class="card" style="min-width: 300px;">
+                <img src="{{m['poster_url']}}" class="card-img" style="height: 400px; object-fit: cover;">
+                <div class="card-body">
+                    <h4 class="card-title">{{m['title']}}</h4>
+                </div>
+            </div>
+            {% endfor %}
+    </div>
+</div>
 {% endblock %}

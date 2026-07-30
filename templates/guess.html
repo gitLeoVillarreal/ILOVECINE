@@ -95,4 +95,66 @@
     console.log(movieGuess);
     console.log(movieTitle.localeCompare(movieGuess));
 </script>
+
+<script>
+
+    const input = document.getElementById("movie");
+    const movieList = document.getElementById("movie-list");
+    const options = movieList.querySelectorAll(".autocomplete-option");
+    let currentFocus = -1;
+
+    input.onfocus = function () {
+        movieList.style.display = "block";
+    };
+
+    document.addEventListener("click", function (e) {
+        if (e.target !== input) {
+            movieList.style.display = "none";
+        }
+    });
+
+    options.forEach(option => {
+        option.addEventListener("click", function () {
+            input.value = this.dataset.value;
+            movieList.style.display = "none";
+        });
+    });
+
+    input.oninput = function () {
+        const text = input.value.toUpperCase();
+        options.forEach(option => {
+            option.style.display = option.dataset.value.toUpperCase().includes(text) ? "block" : "none";
+        });
+        currentFocus = -1;
+    };
+
+    input.onkeydown = function (e) {
+        const visibleOptions = Array.from(options).filter(o => o.style.display !== "none");
+        if (e.keyCode == 40) { // down
+            currentFocus++;
+            addActive(visibleOptions);
+        } else if (e.keyCode == 38) { // up
+            currentFocus--;
+            addActive(visibleOptions);
+        } else if (e.keyCode == 13) { // enter
+            e.preventDefault();
+            if (currentFocus > -1 && visibleOptions[currentFocus]) {
+                visibleOptions[currentFocus].click();
+            }
+        }
+    };
+
+    function addActive(visibleOptions) {
+        removeActive();
+        if (currentFocus >= visibleOptions.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = visibleOptions.length - 1;
+        visibleOptions[currentFocus].classList.add("active");
+    }
+
+    function removeActive() {
+        options.forEach(o => o.classList.remove("active"));
+    }
+
+</script>
+
 {% endblock %}
