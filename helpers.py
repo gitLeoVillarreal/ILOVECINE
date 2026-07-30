@@ -193,11 +193,15 @@ def get_max_score(userID):
     userMaxScore = cursor.fetchone()
     db.close()
     return userMaxScore[0]
+
+
 def set_max_score(userID, newMaxScore):
     db = Connection()
     cursor = db.cursor()
     values = (newMaxScore, userID)
+    print(values)
     cursor.execute("UPDATE users SET max_score = ? WHERE id = ?", values)
+    db.commit()
     db.close()
 
 def main():

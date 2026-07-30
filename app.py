@@ -10,13 +10,9 @@ secret_key = os.getenv("SECRET_KEY")
 if not secret_key:
     raise ValueError("Theres no SECRET_KEY at env variables")
 app.secret_key = secret_key
-
 @app.route('/')
 def index():
-    if session['user_id']:
-        session['maxScore'] = get_max_score(session['user_id'])
-    else:
-        session['maxScore'] = 0
+   
     return redirect("/home")
 
 @app.route('/login', methods=['GET','POST'])
@@ -48,9 +44,10 @@ def login():
                 db.close()
 
                 session["user_id"] = userID
+                print(session['user_id'])
                 session["username"] = username
                 flash(f"Welcome {username} to I Love Cine", 'message')
-                return redirect("/")
+                return redirect("/home")
                 
             except Exception as e:
                 flash("Invalid values!", 'error')
@@ -99,8 +96,8 @@ def home():
     movies_home = []
     for _ in range(1,30):
         movies_home.append(random_poster_movie(cursor))
-    for m in movies_home:
-        print(m['title'])
+    #for m in movies_home:
+    #    print(m['title'])
     return render_template("home.html", movies_home=movies_home)
 
 @app.route('/recomendations', methods=['GET', 'POST'])
@@ -145,6 +142,10 @@ def recommend():
 
 @app.route('/guessthemovie', methods=['GET', 'POST'])
 def guess():
+    if session['user_id'] != None:
+            session['maxScore'] = get_max_score(session['user_id'])
+    else:
+        session['maxScore'] = 0
     db = Connection()
     cursor = db.cursor()
     cursor.execute("SELECT * FROM movies")
@@ -173,8 +174,8 @@ def guess():
             guesses = int(request.form.get('guesses')) + 1
             score = int(request.form.get('score')) - (10 * guesses)
             if guesses >= 5:
-                if score > session.get('maxScore'):
-                    
+                if score > int(session['maxScore']):
+                    print(f"{score} > {session['maxScore']}")
                     if session['user_id']:
                         print(session['user_id'])
                         set_max_score(session['user_id'], score)
@@ -182,6 +183,10 @@ def guess():
                     else:
                         session['maxScore'] = score
 
+                    flash(f"Game over! Your final score is {score}. Your new highest score is {session['maxScore']}.")
+                    db.close()
+                    return redirect("/guessthemovie")
+                
                 flash(f"Game over! Your final score is {score}. Your highest score is {session['maxScore']}.")
                 db.close()
                 return redirect("/guessthemovie")
