@@ -378,12 +378,6 @@ li {
     padding: 1rem;
 }
 
-.carousel-track:hover{
-    .movies-carousel .card{
-        width: 300px;
-    }
-}
-
 @keyframes scroll-left {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
@@ -391,5 +385,24 @@ li {
 
 .movies-carousel .card {
   flex-shrink: 0;
-  width: 220px; /* o el ancho que quieras por tarjeta */
+  max-width: 220px; /* o el ancho que quieras por tarjeta */
+  color:#e8e9eb;
+  background-color: #070b26;
+  box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);  
+  flex-wrap: wrap;
+  
+  img{
+    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.5);  
+  }
+  h4{
+    text-align: center;
+  }
+
+}
+
+.movies-carousel .card:hover {
+    border-color: #FFBF00;
+    border-width: .75rem;
+    transition: 300ms;
+    
 }
