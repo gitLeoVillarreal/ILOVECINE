@@ -8,7 +8,7 @@ load_dotenv()
 api_key = os.getenv("TMDB_API_KEY")
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
-MAX_PAGE = 100
+MAX_PAGE = 150
 LEN = "en-US"
 
 def Connection():
@@ -23,7 +23,7 @@ def UsersDataBase():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
+        username TEXT NOT NULL UNIQUE,
         hash TEXT NOT NULL,
         max_score INTEGER NOT NULL DEFAULT 0
         )
@@ -170,20 +170,20 @@ def recommendation(movie):
     db.close()
     return(recommendedMovies)
 
-def random_poster_movie(cursor):
-    cursor.execute("SELECT movie_id FROM movies ORDER BY RANDOM() LIMIT 1")
-    randomMovieId = cursor.fetchone()
+def random_poster_movie_home(cursor):
+    
 
-    cursor.execute("SELECT title, poster_url FROM movies WHERE movie_id = ?", (randomMovieId['movie_id'],))
+    cursor.execute("SELECT title, poster_url FROM movies ORDER BY RANDOM() LIMIT 20")
+    randomPosters = cursor.fetchall()
+
+    return randomPosters
+
+def random_poster_movie(cursor):
+
+    cursor.execute("SELECT movie_id, title, poster_url FROM movies ORDER BY RANDOM() LIMIT 1")
     randomPoster = cursor.fetchone()
 
-    randomPosterFinal = {
-        'movie_id': randomMovieId['movie_id'],
-        'title': randomPoster['title'],
-        'poster_url': randomPoster['poster_url']
-    }
-
-    return randomPosterFinal
+    return randomPoster
 
 def get_max_score(userID):
     db = Connection()

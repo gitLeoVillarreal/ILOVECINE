@@ -7,9 +7,6 @@
     <div class="forms mb-4">
         <h2>Guess the movie by its poster:</h2>
     <form class="form-inline" method="post">
-        
-        <input type="hidden" name="score" id="score" value="{{ randomPoster['score'] }}">
-        <input type="hidden" name="guesses" id="guesses" value="{{ randomPoster['guesses'] }}">
         <input type="hidden" name="movie_id" value="{{ randomPoster['movie_id'] }}">
         <input type="hidden" name="movie_title" id="movie_title" value="{{ randomPoster['title'] }}">
 
@@ -38,10 +35,10 @@
     </div>
     <div class="row">
         <div class="col-sm mt-2">
-            <span class="stat-shower">Score: {{ randomPoster['score'] }} </span>
+            <span class="stat-shower">Score: {{ session['score'] }} </span>
         </div>
         <div class="col-sm mt-2">
-            <span class="stat-shower">Guesses: {{ randomPoster['guesses'] }} </span>
+            <span class="stat-shower">Guesses: {{ session['guesses'] }} </span>
         </div>
         <div class="col-sm mt-2">
             <span class="stat-shower">Max Score: {{ session['maxScore'] }} </span>
@@ -56,8 +53,8 @@
     const poster = document.getElementById('poster');
     const movieTitle = document.getElementById('movie_title').value;
     const movieGuess = document.getElementById('movie').value;
-    const guesses = parseInt(document.getElementById('guesses').value);
-    const score = parseInt(document.getElementById('score').value);
+    const guesses = {{ session['guesses'] }};
+    const score =  {{ session['score'] }};
     let clicks = guesses;
     function GuessMovie() {
         if(movieTitle.localeCompare(movieGuess) == 0){
@@ -65,7 +62,6 @@
         }
         else{
             //event.preventDefault();
-            document.getElementById('guesses').value = clicks;
             revealPoster(clicks);
         }
     }

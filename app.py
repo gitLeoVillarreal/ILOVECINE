@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session
 import json
 from argon2 import PasswordHasher
-from helpers import recommendation, Connection, random_poster_movie, get_max_score, set_max_score
+from helpers import recommendation, Connection, random_poster_movie, random_poster_movie_home,  get_max_score, set_max_score
 
 app = Flask(__name__)
 
@@ -34,24 +34,24 @@ def login():
 
                 if not row:
                     flash("Invalid values!", 'error')
+                    db.close()
                     return render_template("login.html")
                 userID, hash_p = row[0][0], row[0][1]
-
-                print(userID, hash_p)
 
                 ph.verify(hash_p, password)
 
                 db.close()
 
                 session["user_id"] = userID
-                print(session['user_id'])
+                
                 session["username"] = username
                 flash(f"Welcome {username} to I Love Cine", 'message')
                 return redirect("/home")
                 
             except Exception as e:
                 flash("Invalid values!", 'error')
-                print(e)
+               
+                db.close()
                 return render_template("login.html")
     else:
         return render_template("login.html")
@@ -78,10 +78,15 @@ def register():
                     return redirect("/login")
                 except:
                     flash("Username already in use!", 'alert')
+                    db.close()
                     return render_template("register.html")
             except Exception:
                 flash("Invalid values!", 'error')
+                db.close()
                 return render_template("register.html")
+        else:
+            flash("Missing username or passwords did not match!", 'error')
+            return render_template("register.html")
     else:
         return render_template("register.html")
 @app.route("/logout")
@@ -94,10 +99,9 @@ def home():
     db = Connection()
     cursor = db.cursor()
     movies_home = []
-    for _ in range(1,30):
-        movies_home.append(random_poster_movie(cursor))
-    #for m in movies_home:
-    #    print(m['title'])
+    
+    movies_home = random_poster_movie_home(cursor)
+    db.close()
     return render_template("home.html", movies_home=movies_home)
 
 @app.route('/recomendations', methods=['GET', 'POST'])
@@ -115,11 +119,12 @@ def recommend():
 
         if not recommendMovie:
             flash("Movie not found in the database. Please try again.", 'error')
+            db.close()
             return render_template('recommend.html', movies=movies)
         
         for rm in recommendMovie:
             markers = ", ".join(["?"] * len(json.loads(rm['genre_ids'])))
-            #print(rm[4], markers, len(rm[4]))
+            
             cursor.execute(f"SELECT name FROM genres WHERE genre_id IN ({markers})", json.loads(rm['genre_ids']))
             genres = cursor.fetchall()
             genresClean = [g[0] for g in genres]
@@ -156,8 +161,8 @@ def guess():
     if request.method == 'POST':
         
         if str(request.form.get('movie')).lower() == str(request.form.get('movie_title')).lower():
-            score = int(request.form.get('score')) + 100
-            guesses = int(request.form.get('guesses'))
+            session['score'] = int(session['score']) + 100
+            session['guesses'] = 0
 
             randomPoster = random_poster_movie(cursor)
             
@@ -166,64 +171,56 @@ def guess():
                 "movie_id": randomPoster['movie_id'],
                 "title": randomPoster['title'],
                 "poster_url": randomPoster['poster_url'],
-                "score": score,
-                "guesses": 0
             }
             db.close()
             return render_template('guess.html', movies=movies, randomPoster=randomPosterFinal)
             
         else:
-            guesses = int(request.form.get('guesses')) + 1
-            score = int(request.form.get('score')) - (10 * guesses)
-            if guesses >= 5:
-                if score > int(session['maxScore']):
-                    print(f"{score} > {session['maxScore']}")
+            session['guesses'] = int(session['guesses']) + 1
+            session['score'] = int(session['score']) - (10 * session['guesses'])
+            if session['guesses'] >= 5:
+                if session['score'] > int(session['maxScore']):
+                    
                     if session.get("user_id"):
-                        print(session['user_id'])
-                        set_max_score(session['user_id'], score)
+                        
+                        set_max_score(session['user_id'], session['score'])
                         session['maxScore'] = get_max_score(session['user_id'])
                     else:
-                        print(session['maxScore'])
-                        session['maxScore'] = score
+                        
+                        session['maxScore'] = session['score']
 
-                    flash(f"Game over! Your final score was {score}. Your new highest score is {session['maxScore']}.")
+                    flash(f"Game over! Your final score was {session['score']}. Your new highest score is {session['maxScore']}.")
                     db.close()
                     return redirect("/guessthemovie")
                 
-                flash(f"Game over! Your final score was {score}. Your highest score is {session['maxScore']}.")
+                flash(f"Game over! Your final score was {session['score']}. Your highest score is {session['maxScore']}.")
                 db.close()
                 return redirect("/guessthemovie")
 
-            flash(f"Incorrect guess -{10 * guesses}pts! You have {5 - guesses} guesses left.", 'alert')
+            flash(f"Incorrect guess -{10 * session['guesses']}pts! You have {5 - session['guesses']} guesses left.", 'alert')
             
         
         movie_id = request.form.get('movie_id')
         movie_title = request.form.get('movie_title')
         cursor.execute("SELECT poster_url FROM movies WHERE movie_id = ?", (movie_id,))
         randomPoster = cursor.fetchone()
+        
         randomPosterFinal = {   
             "movie_id": movie_id,
             "title": movie_title,
             "poster_url": randomPoster[0],
-            "score": score,
-            "guesses": guesses
         }
-        #print(randomPosterFinal, "post")
         db.close()
         return render_template('guess.html', movies=movies, randomPoster=randomPosterFinal)
 
     else:
+        session['score'] = 0
+        session['guesses'] = 0
         randomPoster = random_poster_movie(cursor)
-        #print(randomPoster)
-
         randomPosterFinal = {   
-            "movie_id": randomPoster['movie_id'],
-            "title": randomPoster['title'],
-            "poster_url": randomPoster['poster_url'],
-            "score": 0,
-            "guesses": 0
-        }
-
-        #print(randomPosterFinal, "get")
+                    "movie_id": randomPoster['movie_id'],
+                    "title": randomPoster['title'],
+                    "poster_url": randomPoster['poster_url'],
+                }
         db.close()
-        return render_template('guess.html', movies=movies, randomPoster=randomPosterFinal)
+        return render_template('guess.html', movies=movies, randomPoster=randomPoster)

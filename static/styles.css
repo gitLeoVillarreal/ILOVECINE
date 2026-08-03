@@ -303,11 +303,7 @@ li {
 
 .poster-img {
     width: 275px;
-}
-
-#poster {
     filter: blur(8px);
-
 }
 
 .autocomplete-list {

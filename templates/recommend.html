@@ -39,7 +39,7 @@
             {% for rm in recommendedMovie %}
             <tr>
                 <td><img src="{{ rm.poster }}" alt="{{ rm.title }}" width="100"></td>
-                <td>{{ rm.title }}</td>
+                <td><h4>{{ rm.title }}</h4></td>
                 <td>{{ rm.genres|join(", ") }}</td>
                 <td>{{ '{:.1f}'.format(rm.rating) }}/10 ⭐</td>
                 <td>{{ rm.release_date }}</td>
