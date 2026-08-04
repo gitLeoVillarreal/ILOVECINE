@@ -6,45 +6,46 @@
 <div class="form-background">
     <div class="forms mb-4">
         <h2>Guess the movie by its poster:</h2>
-    <form class="form-inline" method="post">
-        <input type="hidden" name="movie_id" value="{{ randomPoster['movie_id'] }}">
-        <input type="hidden" name="movie_title" id="movie_title" value="{{ randomPoster['title'] }}">
+        <form class="form-inline" method="post">
+            <input type="hidden" name="movie_id" value="{{ randomPoster['movie_id'] }}">
+            <input type="hidden" name="movie_title" id="movie_title" value="{{ randomPoster['title'] }}">
 
-        <label for="movie"> Try to guess the movie: </label>
-        <div class="autocomplete-wrapper" style="position:relative;">
-            <input type="search"class="form-control" name="movie" placeholder = "Title" list="movie-list" id="movie" autocomplete="off" value="{{ request.form.get('movie', '') }}">
-            <div id="movie-list" class="autocomplete-list">
-                {% for m in movies %}
-                <div class="autocomplete-option" data-value="{{ m[2] }}" style="padding:5px; cursor:pointer;">
-                    {{ m[2] }}
+            <label for="movie"> Try to guess the movie: </label>
+            <div class="autocomplete-wrapper" style="position:relative;">
+                <input type="search" class="form-control" name="movie" placeholder="Title" list="movie-list" id="movie"
+                    autocomplete="off" value="{{ request.form.get('movie', '') }}">
+                <div id="movie-list" class="autocomplete-list">
+                    {% for m in movies %}
+                    <div class="autocomplete-option" data-value="{{ m[2] }}" style="padding:5px; cursor:pointer;">
+                        {{ m[2] }}
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+            </div>
+            <button class="btn btn-primary" id="guess-button" type="submit">Guess</button>
+        </form>
+
+
+        <div class="card">
+            <div class="row g-0">
+                <div class="col">
+                    <img src="{{ randomPoster['poster_url'] }}" class="img-fluid poster-img" id="poster"
+                        alt="Random Movie">
+                </div>
             </div>
         </div>
-        <button class="btn btn-primary" id="guess-button" type="submit">Guess</button>
-    </form>
-    
-
-    <div class="card">
-        <div class="row g-0">
-            <div class="col">
-                <img src="{{ randomPoster['poster_url'] }}" class="img-fluid poster-img" id="poster"
-                    alt="Random Movie">
+        <div class="row">
+            <div class="col-sm mt-2">
+                <span class="stat-shower">Score: {{ session['score'] }} </span>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm mt-2">
-            <span class="stat-shower">Score: {{ session['score'] }} </span>
-        </div>
-        <div class="col-sm mt-2">
-            <span class="stat-shower">Guesses: {{ session['guesses'] }} </span>
-        </div>
-        <div class="col-sm mt-2">
-            <span class="stat-shower">Max Score: {{ session['maxScore'] }} </span>
-        </div>
+            <div class="col-sm mt-2">
+                <span class="stat-shower">Guesses: {{ session['guesses'] }} </span>
+            </div>
+            <div class="col-sm mt-2">
+                <span class="stat-shower">Max Score: {{ session['maxScore'] }} </span>
+            </div>
 
-    </div>
+        </div>
     </div>
 
 </div>
@@ -54,13 +55,13 @@
     const movieTitle = document.getElementById('movie_title').value;
     const movieGuess = document.getElementById('movie').value;
     const guesses = {{ session['guesses'] }};
-    const score =  {{ session['score'] }};
+    const score = {{ session['score'] }};
     let clicks = guesses;
     function GuessMovie() {
-        if(movieTitle.localeCompare(movieGuess) == 0){
+        if (movieTitle.localeCompare(movieGuess) == 0) {
             console.log("Correct!")
         }
-        else{
+        else {
             //event.preventDefault();
             revealPoster(clicks);
         }

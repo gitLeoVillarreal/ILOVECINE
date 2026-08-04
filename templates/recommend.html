@@ -4,26 +4,26 @@
 
 {% block content %}
 <div class="form-background">
-    
-<div class = "forms">
-    <h2>Recommend movies:</h2>
-    <form class="form-inline" method="post">
-        <label for="movie"> Insert a movie you liked: </label>
-        <div class="autocomplete-wrapper" style="position:relative;">
-            <input class="form-control" type = "search" name="movie" id="movie" autocomplete="off"
-                value="{{ request.form.get('movie', '') }}" placeholder = "Title">
-            <div id="movie-list" class="autocomplete-list">
-                {% for m in movies %}
-                <div class="autocomplete-option" data-value="{{ m['title'] }}" style="padding:5px; cursor:pointer;">
-                    <img src="{{ m['poster_url'] }}" alt="{{ m['title'] }}" width="40">
-                    {{ m['title'] }}
+
+    <div class="forms">
+        <h2>Recommend movies:</h2>
+        <form class="form-inline" method="post">
+            <label for="movie"> Insert a movie you liked: </label>
+            <div class="autocomplete-wrapper" style="position:relative;">
+                <input class="form-control" type="search" name="movie" id="movie" autocomplete="off"
+                    value="{{ request.form.get('movie', '') }}" placeholder="Title">
+                <div id="movie-list" class="autocomplete-list">
+                    {% for m in movies %}
+                    <div class="autocomplete-option" data-value="{{ m['title'] }}" style="padding:5px; cursor:pointer;">
+                        <img loading="lazy" src="{{ m['poster_url'] }}" alt="{{ m['title'] }}" width="40">
+                        {{ m['title'] }}
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        <button class="btn btn-primary" type="submit">Recommend</button>
-    </form>
-</div>
+            <button class="btn btn-primary" type="submit">Recommend</button>
+        </form>
+    </div>
     {% if recommendedMovie %}
     <table class="table table-striped d-none d-md-table mb-3">
         <thead>
@@ -38,8 +38,10 @@
         <tbody>
             {% for rm in recommendedMovie %}
             <tr>
-                <td><img src="{{ rm.poster }}" alt="{{ rm.title }}" width="100"></td>
-                <td><h4>{{ rm.title }}</h4></td>
+                <td><img loading="lazy" src="{{ rm.poster }}" alt="{{ rm.title }}" width="100"></td>
+                <td>
+                    <h4>{{ rm.title }}</h4>
+                </td>
                 <td>{{ rm.genres|join(", ") }}</td>
                 <td>{{ '{:.1f}'.format(rm.rating) }}/10 ⭐</td>
                 <td>{{ rm.release_date }}</td>
@@ -53,7 +55,7 @@
         <div class="card mb-2 p-1">
             <div class="row g-0">
                 <div class="col-md-4">
-                    <img src="{{ rm.poster }}" class="img-fluid rounded-start" alt="{{ rm.title }}">
+                    <img loading="lazy" src="{{ rm.poster }}" class="img-fluid rounded-start" alt="{{ rm.title }}">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
@@ -69,7 +71,6 @@
     </div>
     {% endif %}
 </div>
-
 <script>
 
     const input = document.getElementById("movie");
