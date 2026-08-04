@@ -225,6 +225,19 @@ li {
         opacity: 1 !important;
     }
 
+    .form-background {
+        width: 100%;
+        padding: .5rem;
+    }
+
+    .form-control, .form-inline {
+        width: 60%;
+    }
+
+    .poster-img {
+        width: 150px;
+    }
+
     .nav-collapse.show {
         transform: translateX(0);
     }

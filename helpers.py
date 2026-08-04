@@ -39,7 +39,7 @@ def MovieList():
     while i <= MAX_PAGE:
         response = requests.get(
         TMDB_BASE_URL + f"/discover/movie",
-        params={"api_key": api_key, "include_adult": "false", "language": LEN, "page": i, "sort_by": "popularity.desc", "vote_count.gte": 80}
+        params={"api_key": api_key, "include_adult": "false", "language": LEN, "page": i, "sort_by": "popularity.desc", "vote_count.gte": 80, "certification_country": "US", "region": "US"}
         )
 
         response.raise_for_status()
