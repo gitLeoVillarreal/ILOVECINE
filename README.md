@@ -92,12 +92,3 @@ The poster's blur level is driven entirely by the server: every time a guess fai
 #### How to use it
 
 To use my app, you need to get an API key from TMDB. You only have to log [here](https://www.themoviedb.org/) in and select the developer usage for the API key, then go to helpers.py and run **MovieDataBase()**, **GenreDataBase()** and **UsersDataBase()** that will create the database tables. Then set a `SECRET_KEY` in your `.env`/`.flaskenv`, run "flask run" in your terminal, register an account (or just play as a guest) and feel free to use it.
-
-#### Work in progress
-
-- Session handling for guests on `/guessthemovie` is fixed (defaults `maxScore` to 0 when there's no prior session). Malformed `guesses` values are only a theoretical risk if the route is hit directly (e.g. via curl) instead of through the app's own form.
-
-#### Thanks, CS50x
-
-This course was great. I found it really entertaining. It's crazy how you can develop many skills with just one course and get the basics to create something like this final project. I hope I'll look back and see this project and be a greater developer and be making more stuff and more ambitious.
-Through my journey as a programmer and student I can't assimilate how much progress I have made already, but I think that this is the peak of the iceberg. I used to only make things with the terminal and then make these web apps feel really crazy, but proud of all the progress and work I have made.
