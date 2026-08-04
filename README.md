@@ -5,6 +5,8 @@
 This is my CS50x Final Project: "I LOVE CINE"
 It's a movie web app where you can create an account, get recommendations from a movie that you liked, or play a guessing game using the posters of random movies while keeping track of your highest score.
 
+<img width="1152" height="648" alt="Untitled design (3)" src="https://github.com/user-attachments/assets/9d7099cc-306e-418b-9a37-1f9a587f4b59" />
+
 #### Requirements
 
 - TMDB API key (https://www.themoviedb.org/)
