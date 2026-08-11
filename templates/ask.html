@@ -1,5 +1,60 @@
 {% extends 'layout.html' %}
 {% block title %}Ask about movies{%endblock%}
 {% block content %}
+<div class="form-background">
 
+    <div class="forms">
+        <h2>Recommend movies:</h2>
+        <form class="form-inline" method="post">
+            <div class="row">
+                <label for="input"> Look for movies: </label>
+                    <input class="form-control" type="search" name="input" id="input" autocomplete="off"
+                        value="{{ request.form.get('movie', '') }}" placeholder="e.g: Movies about bees">
+            </div>
+            <div class="row">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    {% if AIRecommend %}
+    <table class="table table-striped d-none d-md-table mb-3">
+        <thead>
+            <tr>
+                <th scope="col">Poster</th>
+                <th scope="col">Title</th>
+                <th scope="col">Recommendation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for air in AIRecommend %}
+            <tr>
+                <td><img loading="lazy" src="{{ air['poster_url'] }}" alt="{{ air['title'] }}" width="100"></td>
+                <td>
+                    <h4>{{ air['title'] }}</h4>
+                </td>  
+                <td>{{ air['recommendation'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="d-md-none">
+        {% for air in AIRecommend %}
+        <div class="card mb-2 p-1">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img loading="lazy" src="{{ air['poster_url'] }}" class="img-fluid rounded-start" alt="{{ air['title'] }}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{air['tilte'] }}</h5>
+                        <p class="card-text"><strong>Recommendation:</strong> {{ air['recommendation'] }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
 {%endblock%}

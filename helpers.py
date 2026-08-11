@@ -6,6 +6,8 @@ from sentence_transformers import SentenceTransformer, util
 from openai import OpenAI
 import numpy as np
 from dotenv import load_dotenv
+import json
+ 
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 load_dotenv()
 
@@ -115,48 +117,65 @@ def search(userInput, movieIdList=np.load("movies_id_embeddings.npy")):
 
 def generate_response(moviesInfo, userInput):
     movies_text = "\n".join([
-        f"- {m['title']} ({m['release_date'][:4]}, ⭐ {m['rating']}): {m['overview']}"
+        f"- {m['title']} ({m['release_date'][:4]}, ⭐ {m['rating']}): {m['overview']} {m['poster_url']}"
         for m in moviesInfo
     ])
      
     system_prompt = """You are ILOVECINE's recommendation assistant.
-            Your job is to recommend movies based SOLELY on the list provided.
-            Never make up movies that aren't on the list. If the list is empty, say so honestly.
-            Respond in a friendly and enthusiastic tone, in 3-5 lines maximum, briefly explaining why each movie fits the user's request."""
 
-    user_prompt = f"""Películas disponibles:
-                {movies_text} El usuario pidió: "{userInput}" Recomiéndale las que mejor encajen."""
+Your job is to recommend movies based SOLELY on the list provided.
+Never make up movies that aren't on the list. If the list is empty, say so honestly.
+For each movie, briefly explain why it fits the user's request, in a friendly and enthusiastic tone.
+
+You must respond with ONLY a valid JSON array. No introduction, no explanation, no text before or after the JSON, no markdown code blocks or backticks.
+
+The response must start with [ and end with ].
+
+Format (exact structure, one object per movie):
+[
+  {"title": "Cars", "poster_url": "/poster1231.png", "recommendation": "recommendation text here"},
+  {"title": "Cars 2", "poster_url": "/poster456.png", "recommendation": "recommendation text here"}
+]"""
+
+    user_prompt = f"""Available movies:
+                {movies_text} User input: "{userInput}" recommend the movies that apply."""
 
     response = client.chat.completions.create(
-    model="google/gemini-2.0-flash-exp:free",
+    model="poolside/laguna-xs-2.1:free",
     messages=[
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
     ]
 )
     response = response.choices[0].message.content
+    return json.loads(response)
 
-    return response
+def get_moviesinfo_for_openai(user):
+    moviesInfo = []
+    
+    db = Connection()
+    cursor = db.cursor()
+    
+    resultado = search(user)
+    
+    markers = ", ".join(["?"] * len(resultado))
 
-
-moviesInfo = []
-user = "racing movies"
-db = Connection()
-cursor = db.cursor()
-resultado = search(user)
-markers = ", ".join(["?"] * len(resultado))
-
-cursor.execute(f"SELECT * FROM movies WHERE movie_id IN ({markers})", resultado)
-moviesquery = cursor.fetchall()
-db.close()
-for m in moviesquery:
-    moviesInfo.append({
+    cursor.execute(f"SELECT * FROM movies WHERE movie_id IN ({markers})", resultado)
+    moviesquery = cursor.fetchall()
+    db.close()
+    
+    for m in moviesquery:
+        moviesInfo.append({
         "title": m['title'],
         "overview": m['overview'],
+        "poster_url": m['poster_url'],
         "rating": m['rating'],
         "popularity": m['popularity'],
         "release_date": m['release_date']
         }) 
 
-print(generate_response(moviesInfo, user)) 
+    return moviesInfo
+
+
+
 

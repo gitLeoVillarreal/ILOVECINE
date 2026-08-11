@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session
 import json
 from argon2 import PasswordHasher
-from helpers import recommendation, Connection, random_poster_movie, random_poster_movie_home,  get_max_score, set_max_score
+from helpers import recommendation, Connection, random_poster_movie, random_poster_movie_home,  get_max_score, set_max_score, get_moviesinfo_for_openai, generate_response
 
 app = Flask(__name__)
 
@@ -228,6 +228,14 @@ def guess():
 @app.route("/ask", methods=["POST", "GET"])
 def askAboutMovies():
     if request.method == "POST":
-        pass
+        userInput = request.form.get('input')
+        
+        if not userInput:
+            return render_template("ask.html")
+        
+        moviesInfo = get_moviesinfo_for_openai(userInput)
+        AIRecommend = generate_response(moviesInfo, userInput)
+        
+        return render_template("ask.html", AIRecommend=AIRecommend)
     else:
         return render_template("ask.html")
