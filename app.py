@@ -3,6 +3,8 @@ from flask import Flask, flash, redirect, render_template, request, session
 import json
 from argon2 import PasswordHasher
 from helpers import recommendation, Connection, random_poster_movie, random_poster_movie_home,  get_max_score, set_max_score, get_moviesinfo_for_openai, generate_response
+import numpy as np
+import sqlite3
 
 app = Flask(__name__)
 
@@ -10,6 +12,9 @@ secret_key = os.getenv("SECRET_KEY")
 if not secret_key:
     raise ValueError("Theres no SECRET_KEY at env variables")
 app.secret_key = secret_key
+
+movieIdListEmbeddings = np.load("movies_id_embeddings.npy")
+
 @app.route('/')
 def index():
    
@@ -17,7 +22,7 @@ def index():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-
+    db = None
     session.clear()
 
     if request.method == "POST":
@@ -50,14 +55,15 @@ def login():
                 
             except Exception as e:
                 flash("Invalid values!", 'error')
-               
-                db.close()
+                if db:
+                    db.close()
                 return render_template("login.html")
     else:
         return render_template("login.html")
 
 @app.route('/register', methods=['GET','POST'])
 def register():
+    db = None
     if request.method == "POST":
         ph = PasswordHasher()
         username = request.form.get("username")
@@ -76,13 +82,15 @@ def register():
                     db.commit()
                     db.close()
                     return redirect("/login")
-                except:
+                except sqlite3.IntegrityError :
                     flash("Username already in use!", 'alert')
-                    db.close()
+                    if db:
+                        db.close()
                     return render_template("register.html")
             except Exception:
                 flash("Invalid values!", 'error')
-                db.close()
+                if db:
+                    db.close()
                 return render_template("register.html")
         else:
             flash("Missing username or passwords did not match!", 'error')
@@ -217,11 +225,6 @@ def guess():
         session['score'] = 0
         session['guesses'] = 0
         randomPoster = random_poster_movie(cursor)
-        randomPosterFinal = {   
-                    "movie_id": randomPoster['movie_id'],
-                    "title": randomPoster['title'],
-                    "poster_url": randomPoster['poster_url'],
-                }
         db.close()
         return render_template('guess.html', movies=movies, randomPoster=randomPoster)
 
@@ -233,7 +236,7 @@ def askAboutMovies():
         if not userInput:
             return render_template("ask.html")
         
-        moviesInfo = get_moviesinfo_for_openai(userInput)
+        moviesInfo = get_moviesinfo_for_openai(userInput, movieIdListEmbeddings)
         AIRecommend = generate_response(moviesInfo, userInput)
         
         return render_template("ask.html", AIRecommend=AIRecommend)

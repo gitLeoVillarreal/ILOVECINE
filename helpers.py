@@ -92,7 +92,7 @@ def set_max_score(userID, newMaxScore):
     db.commit()
     db.close()
 
-def search(userInput, movieIdList=np.load("movies_id_embeddings.npy")):
+def search(userInput, movieIdList):
     movies = []
     moviesFinal = []
     vectors = np.load("movies_embeddings.npy")
@@ -148,15 +148,32 @@ Format (exact structure, one object per movie):
     ]
 )
     response = response.choices[0].message.content
-    return json.loads(response)
+    try:
+        responseFinal = json.loads(response)
+        if responseFinal == []:
+            responseFinal = [{
+                    "title": "Error, no movies founded",
+                    "poster_url": "",
+                    "recommendation": "Please try again"
+                    }]
+    except Exception as e:
+        responseFinal = [{
+        "title": "Error, please try again",
+        "poster_url": "",
+        "recommendation": str(e)
+        }]
 
-def get_moviesinfo_for_openai(user):
+    return responseFinal
+
+def get_moviesinfo_for_openai(user, moviesIdList):
     moviesInfo = []
     
     db = Connection()
     cursor = db.cursor()
     
-    resultado = search(user)
+    resultado = search(user, moviesIdList)
+    if resultado == []:
+        return moviesInfo
     
     markers = ", ".join(["?"] * len(resultado))
 
