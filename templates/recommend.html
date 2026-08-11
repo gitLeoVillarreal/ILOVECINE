@@ -8,20 +8,24 @@
     <div class="forms">
         <h2>Recommend movies:</h2>
         <form class="form-inline" method="post">
-            <label for="movie"> Insert a movie you liked: </label>
-            <div class="autocomplete-wrapper" style="position:relative;">
-                <input class="form-control" type="search" name="movie" id="movie" autocomplete="off"
-                    value="{{ request.form.get('movie', '') }}" placeholder="Title">
-                <div id="movie-list" class="autocomplete-list">
-                    {% for m in movies %}
-                    <div class="autocomplete-option" data-value="{{ m['title'] }}" style="padding:5px; cursor:pointer;">
-                        <img loading="lazy" src="{{ m['poster_url'] }}" alt="{{ m['title'] }}" width="40">
-                        {{ m['title'] }}
+            <div class="row">
+                <label for="movie"> Insert a movie you liked: </label>
+                <div class="autocomplete-wrapper" style="position:relative;">
+                    <input class="form-control" type="search" name="movie" id="movie" autocomplete="off"
+                        value="{{ request.form.get('movie', '') }}" placeholder="Title">
+                    <div id="movie-list" class="autocomplete-list">
+                        {% for m in movies %}
+                        <div class="autocomplete-option" data-value="{{ m['title'] }}">
+                            <img loading="lazy" src="{{ m['poster_url'] }}" alt="{{ m['title'] }}" width="40">
+                            {{ m['title'] }}
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
             </div>
-            <button class="btn btn-primary" type="submit">Recommend</button>
+            <div class="row">
+                <button class="btn btn-primary" type="submit">Recommend</button>
+            </div>
         </form>
     </div>
     {% if recommendedMovie %}

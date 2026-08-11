@@ -224,3 +224,10 @@ def guess():
                 }
         db.close()
         return render_template('guess.html', movies=movies, randomPoster=randomPoster)
+
+@app.route("/ask", methods=["POST", "GET"])
+def askAboutMovies():
+    if request.method == "POST":
+        pass
+    else:
+        return render_template("ask.html")

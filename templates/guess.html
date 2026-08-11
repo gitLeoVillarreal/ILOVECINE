@@ -4,25 +4,32 @@
 
 {% block content %}
 <div class="form-background">
-    <div class="forms mb-4">
+    <div class="forms">
         <h2>Guess the movie by its poster:</h2>
         <form class="form-inline" method="post">
+
             <input type="hidden" name="movie_id" value="{{ randomPoster['movie_id'] }}">
             <input type="hidden" name="movie_title" id="movie_title" value="{{ randomPoster['title'] }}">
+            <div class="row">
+                <label for="movie"> Try to guess the movie: </label>
+                <div class="autocomplete-wrapper">
 
-            <label for="movie"> Try to guess the movie: </label>
-            <div class="autocomplete-wrapper" style="position:relative;">
-                <input type="search" class="form-control" name="movie" placeholder="Title" list="movie-list" id="movie"
-                    autocomplete="off" value="{{ request.form.get('movie', '') }}">
-                <div id="movie-list" class="autocomplete-list">
-                    {% for m in movies %}
-                    <div class="autocomplete-option" data-value="{{ m[2] }}" style="padding:5px; cursor:pointer;">
-                        {{ m[2] }}
+                    <input type="search" class="form-control" name="movie" placeholder="Title" list="movie-list"
+                        id="movie" autocomplete="off" value="{{ request.form.get('movie', '') }}">
+
+                    <div id="movie-list" class="autocomplete-list">
+                        {% for m in movies %}
+                        <div class="autocomplete-option" data-value="{{ m[2] }}">
+                            {{ m[2] }}
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+
                 </div>
             </div>
-            <button class="btn btn-primary" id="guess-button" type="submit">Guess</button>
+            <div class="row">
+                <button class="btn btn-primary" id="guess-button" type="submit">Guess</button>
+            </div>
         </form>
 
 
